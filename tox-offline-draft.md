@@ -35,10 +35,17 @@ Clients should have a reasonable default set for DHT storage size and
 optionally allow users to change it. This space will be used for storing
 messages of other users.
 
+## Storage Space Allocation
+
+The RECEIVER must request a certain amount of storage space for incoming
+offline messages on a number of STORAGE_NODEs. A PoW job must be completed
+by the RECEIVER to do this. The more space required per node, the higher
+the PoW difficulty.
+
 ## Inserting Messages
 
 A user creates a new public and private key pair (Current DHT keys are
-ephemeral) per friend to encrypt offline messages.  Messages are stored
+expected to be ephemeral) per friend to encrypt offline messages.  Messages are stored
 amongst an array of known nodes.  Users then store messages they want to send
 to a store on those nodes after optionally completing a PoW function. 
 
@@ -52,16 +59,17 @@ should then delete them from their store.
 ## Spam
 
 As a Proof-of-Work (PoW) hash function is used to insert messages into the
-DHT. The SENDER and RECEIVER must complete a certain amount of computational
-hashing before they can send a message. Messages that do not properly
-complete the hashing function will be dropped by network clients upon
-receival. Thus is makes spamming a user or the network unreliable and costly.
+DHT. The SENDER and RECEIVER must complete a certain amount of
+computational hashing before they can send a message. Messages that do not
+properly complete the hashing function will be dropped by network clients
+upon receival. Thus is makes spamming a single user or the network
+unreliable and costly.
 
-The difficulty of the PoW is increased relative to the storage space required
-to storage messages, to ensure an attacker cannot simply fill a
-STORAGE_NODE's available message space with a single message. However, very
-small messages could game this multiplier, and thus even the minimum PoW
-difficulty must be reasonably large.
+The difficulty of the PoW is increased relative to the storage space
+required to storage messages, to ensure a malicious SENDER cannot simply
+fill a STORAGE_NODE's available message space with a single message.
+However, very small messages could game this multiplier, and thus even the
+minimum PoW difficulty must be reasonably large.
 
 Messages should also expire eventually, and thus a higher PoW difficulty
 should be required for a longer message TTL (time to live).
@@ -106,7 +114,7 @@ will start over again.
 
 ```
 SENDER -> DHT_Node [The Message]
-    encrypts to friend       --> [sender:DHT_node shared key [SENDER : RECEIVER  key_pair || The Message]]
+    encrypts to friend       --> [SENDER : RECEIVER  key_pair || The Message]
     encrypts to storage_node --> [sender:DHT_node shared key [SENDER : RECEIVER  key_pair || The Message]]
 DHT_node  
     decrypts from sender     --> [sender:friend shared key || The Message]
