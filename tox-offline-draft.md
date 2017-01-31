@@ -1,6 +1,6 @@
-*# Tox DHT Offline Messaging
+# Tox DHT Offline Messaging
 
-*## Overview
+## Overview
 
 This proposal aims to provide a general and technical walkthrough of an offline
 messaging protocol for use with the Tox protocol using its existing Distributed
@@ -12,7 +12,7 @@ As this method uses the DHT, it is currently UDP only and will not work unless
 UDP is enabled. This restriction will hopefully be lifted with further work and
 development of the Tox protocol.
 
-*## Terminology
+## Terminology
 PoW:
   Proof-of-Work -- Determines work necessary in order to store an offline message on the DHT.
     (Currently WIP on what the exact method of PoW used will be)				
@@ -26,7 +26,7 @@ RECEIVER:
 STORAGE_NODE:
   One of potentially many nodes storing offline messages for other users.
 
-*## DHT Extension
+## DHT Extension
 
 The DHT must be extended in order to be able to store arbitrary data. Tox
 Clients should have a reasonable default set for DHT storage size and
@@ -56,13 +56,13 @@ Networks, but can easily be applied to Chord-style DHTs by having each node sit
 in a key range on multiple rings. This ensure data is backed by at least r
 nodes, where r is the amount of rings each node is a part of.
 
-*## Storage Space Allocation
+## Storage Space Allocation
 
 STORAGE_NODEs allocate a certain amount of space for DHT data. For SENDER to
 store data in that space, the SENDER must complete a PoW function that the
 STORAGE_NODE deems valid.
 
-*## Inserting Messages
+## Inserting Messages
 
 A user encrypts offline messages with the long term public key of the offline
 friend they are sending too. This encrypted message is then encrypted a second
@@ -79,14 +79,14 @@ to a store on those nodes after optionally completing a PoW function.
 There is no limit on the size of data that may be stored, however a STORAGE_NODE
 is able to refuse the storage of data if the stored data exceeds a local limit.
 
-*## Retrieving Messages
+## Retrieving Messages
 
 Users simply check the SENDER's STORAGE NODES in the DHT when they come
 online.  If any messages are available they will download them from the nodes
 holding them and decrypt them with their OM keys. Nodes holding messages
 should then delete them from their store.
 				
-*## Re-announcing messages
+## Re-announcing messages
 
 As the DHT is considered to only be temporary storage, each piece of data stored
 within it is given a TTL value (Time-to-live). This value is determined when the
@@ -101,7 +101,7 @@ difficulty).
 As Toxcore does not write to disk, all data on a storage node is cleared on
 shutdown.
 
-*## Spam
+## Spam
 
 As a Proof-of-Work (PoW) hash function is used to insert messages into the DHT.
 The SENDER must complete a certain amount of computational hashing before they
@@ -118,7 +118,7 @@ difficulty must be reasonably large.
 Messages should also expire eventually, and thus a higher PoW difficulty
 should be required for a longer message TTL.
 		
-*## Privacy
+## Privacy
 
 Tox does not inherently provide anonymity, however this will not expose any
 more information about the user than using the DHT in Tox already does.
@@ -128,7 +128,7 @@ requests messages with the same key, however one could enumerate this simply by
 watching traffic from either the SENDER or RECEIVER so this does not provide
 much new information.
 
-*## Security
+## Security
 
 Messages are encrypted by the SENDER with two layers, one layer for the
 STORAGE_NODE which encrypts the metadata necessary to see whom the message is
@@ -136,15 +136,15 @@ intended for, and another layer for the RECEIVER that includes the message
 itself. Users will not be able to read the content of other user's messages
 unless intended for them.
 
-*# Technical
+# Technical
 
-*## Packet details
+## Packet details
 
 Need a packet type for storing data (including data/TTL updates), getting data,
 retrieving messages from STORAGE_NODEs, sending PoW requests and responses, and
 those for building the DHT (joining, leaving, updating key range).
 
-*## Packet encryption
+## Packet encryption
 
 There are 2 layers of encryption for a message, first the SENDER encrypts the
 message using the specific private key generated for offline data storage. In 
@@ -171,7 +171,7 @@ RECEIVER [sender:DHT_node shared key
 RECEIVER DONE --> display [The Message]
 ```
 
-*## PoW function
+## PoW function
 
 PoW job is computed on STORAGE_NODE (low cost) then sent to either SENDER
 or RECEIVER to compute for proof (high cost). We could use a heavy PoW for
@@ -192,7 +192,7 @@ potential source of income for the Tox Project. Further investigation needed.
 Proof of Network (mentioned above) may solve issue of required CPU resources while
 remaining fair to each device (in average amount of time to store data offline).
 
-*## UX/UI
+## UX/UI
 
 When a friend is added, a UI option appears for setting up offline messaging, or
 this could be done automatically. When a user sends a message to an offline friend,
@@ -203,7 +203,7 @@ something specific.
 At the moment storing files offline is not supported, but with the current model this
 should be trivial to add for small files.
 
-*# References
+# References
 	
 [0] [BitMessage Spec v3 PoW Summary](https://bitmessage.org/wiki/POW)
 
